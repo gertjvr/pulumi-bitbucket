@@ -22,13 +22,13 @@ import (
 	"github.com/pulumi/pulumi-terraform-bridge/v2/pkg/tfbridge"
 	"github.com/pulumi/pulumi/sdk/v2/go/common/resource"
 	"github.com/pulumi/pulumi/sdk/v2/go/common/tokens"
-	"github.com/terraform-providers/terraform-provider-github/github"
+	"github.com/terraform-providers/terraform-provider-bitbucket/bitbucket"
 )
 
 // all of the token components used below.
 const (
 	// packages:
-	mainPkg = "github"
+	mainPkg = "bitbucket"
 	// modules:
 	mainMod = "index" // the y module
 )
@@ -92,55 +92,35 @@ func Provider() tfbridge.ProviderInfo {
 	// Create a Pulumi provider mapping
 	prov := tfbridge.ProviderInfo{
 		P:           p,
-		Name:        "github",
-		Description: "A Pulumi package for creating and managing github cloud resources.",
+		Name:        "bitbucket",
+		Description: "A Pulumi package for creating and managing bitbucket cloud resources.",
 		Keywords:    []string{"pulumi", "github"},
 		License:     "Apache-2.0",
 		Homepage:    "https://pulumi.io",
-		Repository:  "https://github.com/pulumi/pulumi-github",
-		Config:      map[string]*tfbridge.SchemaInfo{
-			// Add any required configuration here, or remove the example below if
-			// no additional points are required.
-			// "region": {
-			// 	Type: makeType("region", "Region"),
-			// 	Default: &tfbridge.DefaultInfo{
-			// 		EnvVars: []string{"AWS_REGION", "AWS_DEFAULT_REGION"},
-			// 	},
-			// },
+		Repository:  "https://github.com/pulumi/pulumi-bitbucket",
+		Config: map[string]*tfbridge.SchemaInfo{
+			"username": {
+				Default: &tfbridge.DefaultInfo{
+					EnvVars: []string{"BITBUCKET_USERNAME"},
+				},
+			},
+			"password": {
+				Default: &tfbridge.DefaultInfo{
+					EnvVars: []string{"BITBUCKET_PASSWORD"},
+				},
+			}
 		},
 		PreConfigureCallback: preConfigureCallback,
 		Resources: map[string]*tfbridge.ResourceInfo{
-			//"github_actions_secret":           {Tok: makeResource(mainMod, "ActionsSecret")},
-			"github_branch_protection":        {Tok: makeResource(mainMod, "BranchProtection")},
-			"github_issue_label":              {Tok: makeResource(mainMod, "IssueLabel")},
-			"github_membership":               {Tok: makeResource(mainMod, "Membership")},
-			"github_organization_block":       {Tok: makeResource(mainMod, "OrganizationBlock")},
-			"github_organization_project":     {Tok: makeResource(mainMod, "OrganizationProject")},
-			"github_organization_webhook":     {Tok: makeResource(mainMod, "OrganizationWebhook")},
-			"github_project_column":           {Tok: makeResource(mainMod, "ProjectColumn")},
-			"github_repository":               {Tok: makeResource(mainMod, "Repository")},
-			"github_repository_collaborator":  {Tok: makeResource(mainMod, "RepositoryCollaborator")},
-			"github_repository_deploy_key":    {Tok: makeResource(mainMod, "RepositoryDeployKey")},
-			"github_repository_file":          {Tok: makeResource(mainMod, "RepositoryFile")},
-			"github_repository_project":       {Tok: makeResource(mainMod, "RepositoryProject")},
-			"github_repository_webhook":       {Tok: makeResource(mainMod, "RepositoryWebhook")},
-			"github_team":                     {Tok: makeResource(mainMod, "Team")},
-			"github_team_membership":          {Tok: makeResource(mainMod, "TeamMembership")},
-			"github_team_repository":          {Tok: makeResource(mainMod, "TeamRepository")},
-			"github_user_gpg_key":             {Tok: makeResource(mainMod, "UserGpgKey")},
-			"github_user_invitation_accepter": {Tok: makeResource(mainMod, "UserInvitationAccepter")},
-			"github_user_ssh_key":             {Tok: makeResource(mainMod, "UserSshKey")},
+			"branch_restriction":              {Tok: makeResource(mainMod, "BranchRestriction")},
+			"default_reviewers":               {Tok: makeResource(mainMod, "DefaultReviewers")},
+			"hook":                            {Tok: makeResource(mainMod, "Hook")},
+			"project":                         {Tok: makeResource(mainMod, "Project")},
+			"repository":                      {Tok: makeResource(mainMod, "Repository")},
+			"repository_variable":             {Tok: makeResource(mainMod, "RepositoryVariable")}
 		},
 		DataSources: map[string]*tfbridge.DataSourceInfo{
-			"github_actions_public_key": {Tok: makeDataSource(mainMod, "getActionsPublicKey")},
-			"github_collaborators":      {Tok: makeDataSource(mainMod, "getCollaborators")},
-			"github_ip_ranges":          {Tok: makeDataSource(mainMod, "getIpRanges")},
-			"github_membership":         {Tok: makeDataSource(mainMod, "getMembership")},
-			"github_release":            {Tok: makeDataSource(mainMod, "getRelease")},
-			"github_repositories":       {Tok: makeDataSource(mainMod, "getRepositories")},
-			"github_repository":         {Tok: makeDataSource(mainMod, "getRepository")},
-			"github_team":               {Tok: makeDataSource(mainMod, "getTeam")},
-			"github_user":               {Tok: makeDataSource(mainMod, "getUser")},
+			"user": {Tok: makeDataSource(mainMod, "getUser")}
 		},
 		JavaScript: &tfbridge.JavaScriptInfo{
 			AsyncDataSources: true,

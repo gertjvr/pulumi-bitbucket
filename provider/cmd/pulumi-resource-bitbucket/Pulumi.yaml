@@ -1,0 +1,3 @@
+name: bitbucket
+description: A Pulumi resource provider for bitbucket.
+language: schema
